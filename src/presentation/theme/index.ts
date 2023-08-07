@@ -6,6 +6,7 @@ export type Color =
   | "blue"
   | "light-cyan"
   | "light-gray"
+  | "dark-gray"
   | "black"
   | "white";
 
@@ -55,6 +56,7 @@ const Theme: ThemeProps = {
     black: "#000",
     "light-cyan": "#A8DADC",
     "light-gray": "#F1FAEE",
+    "dark-gray": "#a0aab2",
     blue: "#457B9D",
     red: "#E63946",
     white: "#FFF",
