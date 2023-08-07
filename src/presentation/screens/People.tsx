@@ -61,32 +61,26 @@ const People = () => {
           <ScrollView
             ref={ref}
             style={styles.scrollView}
-            keyboardDismissMode="interactive"
           >
-            <KeyboardAvoidingWrapper>
-              <Column gap={Theme.spacing.sm}>
-                {hasPeople && (
-                  <Column gap={Theme.spacing.sm}>
-                    {paginatedPeople.map((person) => (
-                      <PersonCard key={person.id} person={person} />
-                    ))}
-                  </Column>
-                )}
-                {isLoading && (
-                  <TextH3 style={styles.h3} color="blue">
-                    Loading...
-                  </TextH3>
-                )}
-                {showMoreShown && (
-                  <Box paddingBottom={Theme.spacing.md}>
-                    <Button
-                      title="Show more"
-                      onPress={() => showMore(search)}
-                    />
-                  </Box>
-                )}
-              </Column>
-            </KeyboardAvoidingWrapper>
+            <Column gap={Theme.spacing.sm} marginBottom={Theme.spacing.md}>
+              {hasPeople && (
+                <Column gap={Theme.spacing.sm}>
+                  {paginatedPeople.map((person) => (
+                    <PersonCard key={person.id} person={person} />
+                  ))}
+                </Column>
+              )}
+              {isLoading && (
+                <TextH3 style={styles.h3} color="blue">
+                  Loading...
+                </TextH3>
+              )}
+              {showMoreShown && (
+                <Box>
+                  <Button title="Show more" onPress={() => showMore(search)} />
+                </Box>
+              )}
+            </Column>
           </ScrollView>
         )}
       </Column>
