@@ -1,18 +1,13 @@
-import { SafeAreaView } from "react-native";
-import ScreenHeader from "../../navigation/ScreenHeader";
 import { PropsWithChildren } from "react";
+import {
+  Platform,
+  SafeAreaView
+} from "react-native";
 
-interface BaseScreenProps {
-  title?: string;
-}
-
-const BaseScreen = ({
-  children,
-  title,
-}: PropsWithChildren<BaseScreenProps>) => {
+const isAndroid = Platform.OS === "android";
+const BaseScreen = ({ children }: PropsWithChildren) => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      {title && <ScreenHeader title={title} />}
+    <SafeAreaView style={{ paddingTop: isAndroid ? 30 : 0, flex: 1 }}>
       {children}
     </SafeAreaView>
   );
