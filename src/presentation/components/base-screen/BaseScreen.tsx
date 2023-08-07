@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Platform, SafeAreaView } from "react-native";
+
 import KeyboardAvoidingWrapper from "../keyboard-avoiding";
 
 const isAndroid = Platform.OS === "android";

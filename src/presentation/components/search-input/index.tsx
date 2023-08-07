@@ -7,6 +7,7 @@ import {
   TextInputProps,
   TouchableOpacity,
 } from "react-native";
+
 import Theme from "../../theme";
 import Box, { Row } from "../flex";
 import { TextH3 } from "../typography";
@@ -23,7 +24,7 @@ const SearchInput = ({ onFocus, onBlur, ...props }: SearchInputProps) => {
       setFocused(true);
       onFocus?.(e);
     },
-    [onFocus]
+    [onFocus],
   );
 
   const handleBlur = useCallback(
@@ -31,7 +32,7 @@ const SearchInput = ({ onFocus, onBlur, ...props }: SearchInputProps) => {
       setFocused(false);
       onBlur?.(e);
     },
-    [onBlur]
+    [onBlur],
   );
 
   return (

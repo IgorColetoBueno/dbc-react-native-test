@@ -9,7 +9,9 @@ export const peopleFilterUseCase = (people: Person[], text: string = "") => {
     return (
       words.every((word) => person.name.trim().toLowerCase().includes(word)) ||
       words.every((word) => person.phone.trim().toLowerCase().includes(word)) ||
-      words.every((word) => person.salary.toString().trim().toLowerCase().includes(word))
+      words.every((word) =>
+        person.salary.toString().trim().toLowerCase().includes(word),
+      )
     );
   });
 };

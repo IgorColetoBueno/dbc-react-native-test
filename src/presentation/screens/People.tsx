@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
+
 import BaseScreen from "../components/base-screen/BaseScreen";
 import Button from "../components/button";
 import Box, { Column } from "../components/flex";
-import KeyboardAvoidingWrapper from "../components/keyboard-avoiding";
 import PersonCard from "../components/person-card";
 import SearchInput from "../components/search-input";
 import { TextH3 } from "../components/typography";
@@ -58,10 +58,7 @@ const People = () => {
           </TextH3>
         )}
         {!isErrorState && (
-          <ScrollView
-            ref={ref}
-            style={styles.scrollView}
-          >
+          <ScrollView ref={ref} style={styles.scrollView}>
             <Column gap={Theme.spacing.sm} marginBottom={Theme.spacing.md}>
               {hasPeople && (
                 <Column gap={Theme.spacing.sm}>
