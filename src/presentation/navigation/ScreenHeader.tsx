@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight: "600",
+    textTransform: "uppercase",
   },
 });
 
