@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+
 import People from "./src/presentation/screens/People";
 import { PeopleProvider } from "./src/presentation/store";
 import Theme from "./src/presentation/theme";

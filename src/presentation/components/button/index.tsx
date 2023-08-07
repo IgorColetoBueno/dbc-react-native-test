@@ -1,5 +1,5 @@
-import { PropsWithChildren } from "react";
-import { Pressable, TouchableOpacityProps, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, TouchableOpacityProps } from "react-native";
+
 import Theme, { Color } from "../../theme";
 import { TextBody } from "../typography";
 
@@ -19,7 +19,9 @@ const Button = ({
 }: ButtonProps) => {
   return (
     <Pressable {...rest} style={[style, styles.button, { backgroundColor }]}>
-      <TextBody color={color} style={{fontWeight: '500'}}>{title}</TextBody>
+      <TextBody color={color} style={{ fontWeight: "500" }}>
+        {title}
+      </TextBody>
     </Pressable>
   );
 };

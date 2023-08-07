@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Text, TextProps } from "react-native";
+
 import Theme, { Color, Typography as ThemeTypography } from "../../theme";
 interface ColorVariant {
   color?: Color;

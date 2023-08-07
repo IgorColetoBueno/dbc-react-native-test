@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import {
   PropsWithChildren,
   createContext,
@@ -7,6 +8,7 @@ import {
   useReducer,
   useRef,
 } from "react";
+
 import { PeopleRepositoryImpl } from "../../data/repositories/PeopleRepositoryImpl";
 import { Person } from "../../domain/entities/Person";
 import { peopleCheckErrorUseCase } from "../../domain/usecases/PeopleCheckErrorUseCase";
@@ -93,7 +95,7 @@ const peopleReducer = (state: PeopleState, action: Action): PeopleState => {
     case ActionType.FILTER_PEOPLE:
       const filterPeopleList = peopleFilterUseCase(
         state.people,
-        action.payload
+        action.payload,
       );
       return {
         ...state,
@@ -105,7 +107,7 @@ const peopleReducer = (state: PeopleState, action: Action): PeopleState => {
     case ActionType.SHOW_MORE:
       const showMoreFilterPeopleList = peopleFilterUseCase(
         state.people,
-        action.payload
+        action.payload,
       );
       return {
         ...state,
@@ -113,7 +115,7 @@ const peopleReducer = (state: PeopleState, action: Action): PeopleState => {
         people: showMoreFilterPeopleList,
         paginatedPeople: peoplePaginateUseCase(
           showMoreFilterPeopleList,
-          state.page + 1
+          state.page + 1,
         ),
         isLoading: false,
       };
@@ -157,7 +159,8 @@ const PeopleProvider = ({ children }: PropsWithChildren) => {
         type: ActionType.FETCH_PEOPLE,
         payload: data,
       });
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
       dispatch({
         type: ActionType.SET_ERROR,
       });
@@ -179,7 +182,7 @@ const PeopleProvider = ({ children }: PropsWithChildren) => {
         payload: text,
       });
     },
-    [fetchPeople, peopleRepository.current]
+    [fetchPeople, peopleRepository.current],
   );
 
   const showMore = useCallback(
@@ -193,12 +196,12 @@ const PeopleProvider = ({ children }: PropsWithChildren) => {
         payload: text,
       });
     },
-    [fetchPeople, state.paginatedPeople, state.people]
+    [fetchPeople, state.paginatedPeople, state.people],
   );
 
   const memoizedState = useMemo(
     () => ({ ...state, fetchPeople, filterPeople, showMore }),
-    [state, fetchPeople, filterPeople, showMore]
+    [state, fetchPeople, filterPeople, showMore],
   );
 
   return (
