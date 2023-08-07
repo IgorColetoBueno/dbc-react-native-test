@@ -3,30 +3,31 @@ import {
   createContext,
   useCallback,
   useContext,
+  useMemo,
   useReducer,
   useRef,
 } from "react";
+import { PeopleRepositoryImpl } from "../../data/repositories/PeopleRepositoryImpl";
 import { Person } from "../../domain/entities/Person";
+import { peopleCheckErrorUseCase } from "../../domain/usecases/PeopleCheckErrorUseCase";
 import { peopleFilterUseCase } from "../../domain/usecases/PeopleFilterUseCase";
 import { peoplePaginateUseCase } from "../../domain/usecases/PeoplePaginateUseCase";
-import { PeopleRepositoryImpl } from "../../data/repositories/PeopleRepositoryImpl";
-import { peopleCheckErrorUseCase } from "../../domain/usecases/PeopleCheckErrorUseCase";
 
 interface PeopleState {
   people: Person[];
-  filteredPeople: Person[];
+  paginatedPeople: Person[];
   page: number;
   isErrorState: boolean;
   isLoading: boolean;
   fetchPeople: () => Promise<void>;
-  showMore: () => Promise<void>;
+  showMore: (text: string) => Promise<void>;
   filterPeople: (text: string) => Promise<void>;
 }
 
 const initialState: PeopleState = {
   people: [],
   page: 1,
-  filteredPeople: [],
+  paginatedPeople: [],
   isErrorState: false,
   isLoading: true,
   fetchPeople: async () => {},
@@ -58,7 +59,7 @@ interface FilterAction extends BaseAction<string> {
   type: ActionType.FILTER_PEOPLE;
 }
 
-interface ShowMoreAction extends BaseAction<void> {
+interface ShowMoreAction extends BaseAction<string> {
   type: ActionType.SHOW_MORE;
 }
 
@@ -85,8 +86,7 @@ const peopleReducer = (state: PeopleState, action: Action): PeopleState => {
       return {
         ...state,
         people: action.payload || [],
-        filteredPeople: peoplePaginateUseCase(action.payload || [], 1),
-        page: 1,
+        paginatedPeople: peoplePaginateUseCase(action.payload || [], 1),
         isLoading: false,
         isErrorState: false,
       };
@@ -97,17 +97,24 @@ const peopleReducer = (state: PeopleState, action: Action): PeopleState => {
       );
       return {
         ...state,
-        filteredPeople: peoplePaginateUseCase(filterPeopleList, 1),
+        people: filterPeopleList,
+        paginatedPeople: peoplePaginateUseCase(filterPeopleList, 1),
         page: 1,
-        isErrorState: false,
         isLoading: false,
       };
     case ActionType.SHOW_MORE:
+      const showMoreFilterPeopleList = peopleFilterUseCase(
+        state.people,
+        action.payload
+      );
       return {
         ...state,
         page: state.page + 1,
-        filteredPeople: peoplePaginateUseCase(state.people, state.page + 1),
-        isErrorState: false,
+        people: showMoreFilterPeopleList,
+        paginatedPeople: peoplePaginateUseCase(
+          showMoreFilterPeopleList,
+          state.page + 1
+        ),
         isLoading: false,
       };
     case ActionType.SET_ERROR:
@@ -144,7 +151,6 @@ const PeopleProvider = ({ children }: PropsWithChildren) => {
   const fetchPeople = useCallback(async () => {
     try {
       dispatch({ type: ActionType.SET_LOADING, payload: true });
-      peopleRepository.current.simulateDelay = 5000;
       const { data } = await peopleRepository.current.result();
 
       dispatch({
@@ -155,37 +161,48 @@ const PeopleProvider = ({ children }: PropsWithChildren) => {
       dispatch({
         type: ActionType.SET_ERROR,
       });
-      peopleRepository.current.simulateError = false;
     }
   }, []);
 
-  const filterPeople = useCallback(async (text: string) => {
-    if (peopleCheckErrorUseCase(text)) {
-      peopleRepository.current.simulateError = true;
-    }
-    // Calling REST API to simulate a '/filter' endpoint and trigger loading
-    await fetchPeople();
+  const filterPeople = useCallback(
+    async (text: string) => {
+      if (peopleCheckErrorUseCase(text)) {
+        peopleRepository.current.simulateError = true;
+      } else {
+        peopleRepository.current.simulateError = false;
+      }
+      // Calling REST API to simulate a '/filter' endpoint and trigger loading
+      await fetchPeople();
 
-    dispatch({
-      type: ActionType.FILTER_PEOPLE,
-      payload: text,
-    });
-  }, []);
+      dispatch({
+        type: ActionType.FILTER_PEOPLE,
+        payload: text,
+      });
+    },
+    [fetchPeople, peopleRepository.current]
+  );
 
-  const showMore = useCallback(async () => {
-    if (state.filteredPeople.length === state.people.length) return;
+  const showMore = useCallback(
+    async (text: string) => {
+      if (state.paginatedPeople.length === state.people.length) return;
 
-    // Calling REST API to simulate a '/filter' endpoint and trigger loading
-    await fetchPeople();
-    dispatch({
-      type: ActionType.SHOW_MORE,
-    });
-  }, []);
+      // Calling REST API to simulate a '/filter' endpoint and trigger loading
+      await fetchPeople();
+      dispatch({
+        type: ActionType.SHOW_MORE,
+        payload: text,
+      });
+    },
+    [fetchPeople, state.paginatedPeople, state.people]
+  );
+
+  const memoizedState = useMemo(
+    () => ({ ...state, fetchPeople, filterPeople, showMore }),
+    [state, fetchPeople, filterPeople, showMore]
+  );
 
   return (
-    <PeopleContext.Provider
-      value={{ ...state, fetchPeople, filterPeople, showMore }}
-    >
+    <PeopleContext.Provider value={memoizedState}>
       {children}
     </PeopleContext.Provider>
   );
