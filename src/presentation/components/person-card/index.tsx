@@ -2,7 +2,7 @@ import { Person } from "../../../domain/entities/Person";
 import { formatMoney } from "../../../util/money";
 import Theme from "../../theme";
 import { Column, Row } from "../flex";
-import { TextBody2, TextH3 } from "../typography";
+import { TextBody2, TextH2 } from "../typography";
 
 interface PersonCardProps {
   person: Person;
@@ -18,7 +18,7 @@ const PersonCard = ({ person }: PersonCardProps) => {
       borderWidth={1}
     >
       <Row>
-        <TextH3>{person.name}</TextH3>
+        <TextH2>{person.name}</TextH2>
       </Row>
       <Column gap={Theme.spacing.xxs}>
         <Row>

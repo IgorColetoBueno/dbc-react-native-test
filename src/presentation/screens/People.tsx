@@ -23,7 +23,7 @@ const People = () => {
     showMore,
   } = usePeopleContext();
   const [search, setSearch] = useState("");
-  const debouncedSearch = useDebounce(search, 200);
+  const debouncedSearch = useDebounce(search, 300);
   const ref = useRef<ScrollView>(null);
 
   useEffect(() => {
