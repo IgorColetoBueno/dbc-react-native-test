@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import BaseScreen from "../components/base-screen/BaseScreen";
 import Button from "../components/button";
 import Box, { Column } from "../components/flex";
@@ -37,6 +37,8 @@ const People = () => {
   }, [debouncedSearch]);
 
   const showMoreShown = !isLoading && paginatedPeople.length < people.length;
+  const hasError = !isLoading && isErrorState;
+  const hasPeople = !!paginatedPeople.length;
 
   return (
     <BaseScreen>
@@ -50,31 +52,20 @@ const People = () => {
             placeholder="Search"
           />
         </Column>
-        {!isLoading && isErrorState && (
-          <TextH3
-            style={{
-              textAlign: "center",
-              fontWeight: "600",
-              textTransform: "uppercase",
-            }}
-            color="red"
-          >
+        {hasError && (
+          <TextH3 style={styles.h3} color="red">
             Internal server error test
           </TextH3>
         )}
         {!isErrorState && (
           <ScrollView
             ref={ref}
-            style={{
-              paddingHorizontal: Theme.spacing.sm,
-              gap: Theme.spacing.sm,
-            }}
-            alwaysBounceVertical={false}
+            style={styles.scrollView}
             keyboardDismissMode="interactive"
           >
             <KeyboardAvoidingWrapper>
               <Column gap={Theme.spacing.sm}>
-                {!!paginatedPeople.length && (
+                {hasPeople && (
                   <Column gap={Theme.spacing.sm}>
                     {paginatedPeople.map((person) => (
                       <PersonCard key={person.id} person={person} />
@@ -82,14 +73,7 @@ const People = () => {
                   </Column>
                 )}
                 {isLoading && (
-                  <TextH3
-                    style={{
-                      textAlign: "center",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                    }}
-                    color="blue"
-                  >
+                  <TextH3 style={styles.h3} color="blue">
                     Loading...
                   </TextH3>
                 )}
@@ -109,5 +93,17 @@ const People = () => {
     </BaseScreen>
   );
 };
+
+const styles = StyleSheet.create({
+  scrollView: {
+    paddingHorizontal: Theme.spacing.sm,
+    gap: Theme.spacing.sm,
+  },
+  h3: {
+    textAlign: "center",
+    fontWeight: "600",
+    textTransform: "uppercase",
+  },
+});
 
 export default People;
